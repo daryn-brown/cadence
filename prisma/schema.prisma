@@ -1,0 +1,99 @@
+// Intellibus Connect Cycle MVP schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MANAGER
+  CONTRACTOR
+}
+
+enum ContractStatus {
+  ACTIVE
+  ENDED
+  PENDING
+}
+
+enum CycleType {
+  INITIAL
+  MIDPOINT
+  FINAL
+}
+
+enum CycleStatus {
+  PENDING
+  COMPLETE
+}
+
+enum GoalStatus {
+  ON_TRACK
+  AT_RISK
+  COMPLETED
+}
+
+model User {
+  id        String   @id
+  name      String?
+  email     String   @unique
+  role      Role
+  createdAt DateTime @default(now())
+  contractsAsManager   Contract[] @relation("ManagerContracts")
+  contractsAsContractor Contract[] @relation("ContractorContracts")
+}
+
+model Contract {
+  id           Int      @id @default(autoincrement())
+  contractor   User     @relation("ContractorContracts", fields: [contractorId], references: [id])
+  contractorId String
+  manager      User     @relation("ManagerContracts", fields: [managerId], references: [id])
+  managerId    String
+  startDate    DateTime
+  endDate      DateTime
+  status       ContractStatus @default(PENDING)
+  createdAt    DateTime @default(now())
+  connectCycles ConnectCycle[]
+  goals         Goal[]
+  peerFeedbacks PeerFeedback[]
+}
+
+model ConnectCycle {
+  id         Int      @id @default(autoincrement())
+  contract   Contract @relation(fields: [contractId], references: [id])
+  contractId Int
+  type       CycleType
+  status     CycleStatus @default(PENDING)
+  meetingDate DateTime?
+  reflections Reflection[]
+}
+
+model Goal {
+  id         Int      @id @default(autoincrement())
+  contract   Contract @relation(fields: [contractId], references: [id])
+  contractId Int
+  description String
+  metric      String?
+  status      GoalStatus @default(ON_TRACK)
+  notes       String?
+}
+
+model Reflection {
+  id             Int          @id @default(autoincrement())
+  connectCycle   ConnectCycle @relation(fields: [connectCycleId], references: [id])
+  connectCycleId Int
+  question       String
+  response       String?
+}
+
+model PeerFeedback {
+  id         Int      @id @default(autoincrement())
+  contract   Contract @relation(fields: [contractId], references: [id])
+  contractId Int
+  feedbackText String
+  submittedAt  DateTime @default(now())
+} 
