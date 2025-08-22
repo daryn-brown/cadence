@@ -1,5 +1,3 @@
-// Intellibus Connect Cycle MVP schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,6 +5,81 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String     @id
+  name                  String?
+  email                 String     @unique
+  role                  Role
+  createdAt             DateTime   @default(now())
+  comments              Comment[]
+  contractsAsContractor Contract[] @relation("ContractorContracts")
+  contractsAsManager    Contract[] @relation("ManagerContracts")
+}
+
+model Contract {
+  id            Int            @id @default(autoincrement())
+  contractorId  String
+  managerId     String
+  startDate     DateTime
+  endDate       DateTime
+  status        ContractStatus @default(PENDING)
+  createdAt     DateTime       @default(now())
+  connectCycles ConnectCycle[]
+  contractor    User           @relation("ContractorContracts", fields: [contractorId], references: [id])
+  manager       User           @relation("ManagerContracts", fields: [managerId], references: [id])
+  goals         Goal[]
+  peerFeedbacks PeerFeedback[]
+}
+
+model ConnectCycle {
+  id          Int          @id @default(autoincrement())
+  contractId  Int
+  type        CycleType
+  status      CycleStatus  @default(PENDING)
+  completedAt DateTime?
+  comments    Comment[]
+  contract    Contract     @relation(fields: [contractId], references: [id])
+  reflections Reflection[]
+
+  @@unique([contractId, type])
+}
+
+model Goal {
+  id          Int        @id @default(autoincrement())
+  contractId  Int
+  description String
+  metric      String?
+  status      GoalStatus @default(ON_TRACK)
+  notes       String?
+  contract    Contract   @relation(fields: [contractId], references: [id])
+}
+
+model Reflection {
+  id             Int          @id @default(autoincrement())
+  connectCycleId Int
+  question       String
+  response       String?
+  connectCycle   ConnectCycle @relation(fields: [connectCycleId], references: [id])
+}
+
+model PeerFeedback {
+  id           Int      @id @default(autoincrement())
+  contractId   Int
+  feedbackText String
+  submittedAt  DateTime @default(now())
+  contract     Contract @relation(fields: [contractId], references: [id])
+}
+
+model Comment {
+  id             Int          @id @default(autoincrement())
+  connectCycleId Int
+  authorId       String
+  content        String
+  createdAt      DateTime     @default(now())
+  author         User         @relation(fields: [authorId], references: [id])
+  connectCycle   ConnectCycle @relation(fields: [connectCycleId], references: [id])
 }
 
 enum Role {
@@ -36,64 +109,3 @@ enum GoalStatus {
   AT_RISK
   COMPLETED
 }
-
-model User {
-  id        String   @id
-  name      String?
-  email     String   @unique
-  role      Role
-  createdAt DateTime @default(now())
-  contractsAsManager   Contract[] @relation("ManagerContracts")
-  contractsAsContractor Contract[] @relation("ContractorContracts")
-}
-
-model Contract {
-  id           Int      @id @default(autoincrement())
-  contractor   User     @relation("ContractorContracts", fields: [contractorId], references: [id])
-  contractorId String
-  manager      User     @relation("ManagerContracts", fields: [managerId], references: [id])
-  managerId    String
-  startDate    DateTime
-  endDate      DateTime
-  status       ContractStatus @default(PENDING)
-  createdAt    DateTime @default(now())
-  connectCycles ConnectCycle[]
-  goals         Goal[]
-  peerFeedbacks PeerFeedback[]
-}
-
-model ConnectCycle {
-  id         Int      @id @default(autoincrement())
-  contract   Contract @relation(fields: [contractId], references: [id])
-  contractId Int
-  type       CycleType
-  status     CycleStatus @default(PENDING)
-  meetingDate DateTime?
-  reflections Reflection[]
-}
-
-model Goal {
-  id         Int      @id @default(autoincrement())
-  contract   Contract @relation(fields: [contractId], references: [id])
-  contractId Int
-  description String
-  metric      String?
-  status      GoalStatus @default(ON_TRACK)
-  notes       String?
-}
-
-model Reflection {
-  id             Int          @id @default(autoincrement())
-  connectCycle   ConnectCycle @relation(fields: [connectCycleId], references: [id])
-  connectCycleId Int
-  question       String
-  response       String?
-}
-
-model PeerFeedback {
-  id         Int      @id @default(autoincrement())
-  contract   Contract @relation(fields: [contractId], references: [id])
-  contractId Int
-  feedbackText String
-  submittedAt  DateTime @default(now())
-} 

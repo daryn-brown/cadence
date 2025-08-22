@@ -1,7 +1,7 @@
 "use client";
 
-import ContractorCadence from "../app/contract/contractor-cadence";
+import ContractorCadence from "./contract/contractor-cadence/page";
 
-export default function Page() {
+export default function Home() {
   return <ContractorCadence />;
 }
