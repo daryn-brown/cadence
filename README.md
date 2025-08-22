@@ -1,12 +1,14 @@
-# Intellibus Cadence
+
+# Cadence
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178c6?logo=typescript&logoColor=white&style=for-the-badge)
 ![JavaScript](https://img.shields.io/badge/JavaScript-f7df1e?logo=javascript&logoColor=black&style=for-the-badge)
 ![SQL](https://img.shields.io/badge/SQL-336791?logo=postgresql&logoColor=white&style=for-the-badge)
 
-# Intellibus Cadence
 
-**Intellibus Cadence** is a modern contract management and performance tracking platform built with Next.js, Prisma, and a robust PostgreSQL backend. It streamlines the contractor-manager relationship by providing structured, transparent, and actionable workflows for contract cycles, goal setting, feedback, and performance reviews.
+# Cadence
+
+**Cadence** is a modern contract management and performance tracking platform built with Next.js, Prisma, and a robust PostgreSQL backend. It streamlines the contractor-manager relationship by providing structured, transparent, and actionable workflows for contract cycles, goal setting, feedback, and performance reviews.
 
 ## 🚀 Key Features
 
@@ -32,7 +34,7 @@
 - **Authentication & Security:**  
   Integrated with NextAuth and Prisma Adapter for secure, role-based access.
 
-## 🏆 Why Intellibus Cadence?
+## 🏆 Why Cadence?
 
 - **Transparency:**  
   Both contractors and managers have a clear, shared view of progress, expectations, and feedback.
@@ -86,6 +88,7 @@
 4. **Visit:**  
     [http://localhost:3000](http://localhost:3000)
 
+
 ## 📈 Value Proposition
 
-Intellibus Cadence transforms contract management from a static, document-driven process into a dynamic, collaborative journey. By structuring communication, feedback, and goal tracking, it empowers organizations to maximize contractor performance, foster trust, and drive successful outcomes.
+Cadence transforms contract management from a static, document-driven process into a dynamic, collaborative journey. By structuring communication, feedback, and goal tracking, it empowers organizations to maximize contractor performance, foster trust, and drive successful outcomes.
